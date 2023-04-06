@@ -48,7 +48,7 @@ def register():
         username = request.form['username']
         password = request.form['password']
         email = request.form['email']
-        unique_id = uuid.uuid4().int & (1<<32)-1
+        unique_id = uuid.uuid4().int & (1<<16)-1
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         cursor.execute('SELECT * FROM User WHERE username = % s', (username, ))
         account = cursor.fetchone()
@@ -116,7 +116,10 @@ def tasks():
         selectedTaskId = request.args.get("task_id")
     else:
         selectedTaskId = "0"
-    selected = tasks[0]
+    
+    selected = {}
+    if len(tasks) > 0:
+        selected = tasks[0]
     for task in tasks:
         if str(task['id']) == str(selectedTaskId):
             selected = task
